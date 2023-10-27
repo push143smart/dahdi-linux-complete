@@ -57,6 +57,16 @@ create_checkout_github_project_branch() {
                 echo "Checking out to branch $branch_name"
                 git checkout -b $branch_name origin/$branch_name
                 git pull origin $branch_name
+
+		if [ "$project_name" == "dahdi-linux-complete" ]; then
+			if [ -e ChangeLog ]; then
+				date=`date +'%Y-%m-%d'`
+				echo -e "$date $name <$email>\n\n\t* dahdi-linux-complete version $release_name+$release_name released." >> ChangeLog
+
+				git commit -m "Releasing dahdi-linux-complete version $release_name+$release_name"
+		                git push origin $branch_name
+			fi
+		fi
         fi
 }
 
@@ -274,14 +284,6 @@ if [ "$project" == "dahdi-linux-complete" ]; then
         echo "Creating DAHDI Linux Complete"
 #Download project
         download_github_project dahdi-linux-complete
-
-	if [ -e ChangeLog ]; then
-		date=`date +'%Y-%m-%d'`
-		echo -e "$date $name <$email>\n\n\t* dahdi-linux-complete version $release_name+$release_name released." >> ChangeLog
-
-		git commit -m "Releasing dahdi-linux-complete version $release_name+$release_name"
-                git push origin master
-	fi
 #Push new branch / change new branch
         create_checkout_github_project_branch dahdi-linux-complete
 #Create Tag
