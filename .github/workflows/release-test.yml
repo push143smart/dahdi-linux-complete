@@ -68,8 +68,8 @@ jobs:
 # 0 is for release run and 1 is for dry/test run 
       - name: Run Release if it is release run
         if: ${{ inputs.rel_run }}
-        run: bash ./ci/create-test-release.sh ${{ inputs.project_name }} ${{ inputs.release_version }} 0 ${{ inputs.beta_rel }} ${{ inputs.github_user_repo }} ${{ secrets.DAHDI_DEV_AUTH_KEY }} "${{ secrets.DAHDI_DEV_PRIV_GPG_KEY }}"
+        run: bash ./ci/create-dahdi-release.sh ${{ inputs.project_name }} ${{ inputs.release_version }} 0 ${{ inputs.beta_rel }} ${{ inputs.github_user_repo }} ${{ secrets.DAHDI_DEV_AUTH_KEY }} "${{ secrets.DAHDI_DEV_PRIV_GPG_KEY }}"
 
       - name: Run Release if its is dry run
         if: ${{ !inputs.rel_run }}
-        run: bash ./ci/create-test-release.sh ${{ inputs.project_name }} ${{ inputs.release_version }} 1 ${{ inputs.beta_rel }} ${{ inputs.github_user_repo }} ${{ secrets.DAHDI_DEV_AUTH_KEY }} "${{ secrets.DAHDI_DEV_PRIV_GPG_KEY }}"
+        run: bash ./ci/create-dahdi-release.sh ${{ inputs.project_name }} ${{ inputs.release_version }} 1 ${{ inputs.beta_rel }} ${{ inputs.github_user_repo }} ${{ secrets.DAHDI_DEV_AUTH_KEY }} "${{ secrets.DAHDI_DEV_PRIV_GPG_KEY }}"
