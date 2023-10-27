@@ -296,10 +296,11 @@ if [ "$project" == "dahdi-linux-complete" ]; then
 
         linux_complete_name="dahdi-linux-complete-"$release_name"+"$release_name
         echo "$linux_complete_name"
-        mkdir $linux_complete_name
-        cp -rfL Makefile $linux_complete_name/.
-        cp -rfL ChangeLog $linux_complete_name/.
-        cp -rfL README.md $linux_complete_name/.
+        mkdir ../$linux_complete_name
+        cp -rfL Makefile ../$linux_complete_name/.
+        cp -rfL ChangeLog ../$linux_complete_name/.
+        cp -rfL README.md ../$linux_complete_name/.
+	cd ..
 ################################################################################################
 
 ################################################################################################
