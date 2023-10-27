@@ -61,7 +61,7 @@ create_checkout_github_project_branch() {
 		if [ "$project_name" == "dahdi-linux-complete" ]; then
 			if [ -e ChangeLog ]; then
 				date=`date +'%Y-%m-%d'`
-				echo -e "$date $name <$email>\n\n\t* dahdi-linux-complete version $release_name+$release_name released." >> ChangeLog
+				echo -e "$date $name <$email>\n\n\t* dahdi-linux-complete version $release_name+$release_name released.\n\n$(cat ChangeLog)" > ChangeLog
 
 				git commit -m "Releasing dahdi-linux-complete version $release_name+$release_name" -- ChangeLog
 		                git push origin $branch_name
