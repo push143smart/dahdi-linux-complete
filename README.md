@@ -17,11 +17,13 @@ specific to the dahdi-linux and dahdi-tools packages separately
 Pre-Requisites:
 
 For Redhat:
+
 yum -y install kernel-devel-$(uname -r) libtool* make gcc patch perl bison gcc-c++ ncurses-devel flex flex-devel libtermcap-devel autoconf* automake* autoconf
 yum -y install gcc ncurses-devel libtermcap-devel kernel-devel gcc-c++ newt-devel zlib-devel unixODBC-devel libtool make
 
 For Debian:
-apt-get -y install gcc g++ automake autoconf libtool make libncurses5-dev flex bison patch libtool autoconf linux-headers-$(uname -r) sqlite3 libsqlite3-dev 
+
+apt-get -y install gcc g++ automake autoconf libtool make libncurses5-dev flex bison patch libtool autoconf linux-headers-$(uname -r) sqlite3 libsqlite3-dev
 apt-get -y install gcc libncurses-devel kernel-devel kernel-smp-devel gcc-c++ libnewt-dev zlib-devel unixODBC-devel libtool make
 
 To install this package, execute these commands:
