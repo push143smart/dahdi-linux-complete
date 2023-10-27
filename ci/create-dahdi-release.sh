@@ -143,13 +143,19 @@ import_gpg_key() {
 create_github_release() {
         project_name=$1
 
+	if [ "$project_name" == "dahdi-linux-complete" ]; then
+		rel_name="$release_name+$release_name"
+	else
+		rel_name=$release_name
+	fi
+
         resp_code=`curl -s -o response.txt -w "%{http_code}" -L \
                   -X POST \
                   -H "Accept: application/vnd.github+json" \
                   -H "Authorization: Bearer $github_token" \
                   -H "X-GitHub-Api-Version: 2022-11-28" \
                   https://api.github.com/repos/$user/$project_name/releases \
-                  -d '{"tag_name":"v'$release_name'","target_commitish":"'$branch_name'","name":"v'$release_name'","body":"This is Pushkar Test Release","draft":false,"prerelease":true,"generate_release_notes":false}'`
+                  -d '{"tag_name":"v'$release_name'","target_commitish":"'$branch_name'","name":"v'$rel_name'","body":"This is Pushkar Test Release","draft":false,"prerelease":true,"generate_release_notes":false}'`
 
         if [ "$resp_code" == "200" ] || [ "$resp_code" == "201" ] || [ "$resp_code" == "202" ]; then
                 id_token=`cat response.txt | grep -oP "(?<=id\":)[^","]*"  | head -n 1 | tr -d ' '`
@@ -275,7 +281,6 @@ echo "Setting up user ssh keys"
 echo "Creating $project Release $release_name from branch $branch_name of $user"
 
 mkdir release
-ls -lrt
 
 cd release
 
@@ -291,11 +296,10 @@ if [ "$project" == "dahdi-linux-complete" ]; then
 
         linux_complete_name="dahdi-linux-complete-"$release_name"+"$release_name
         echo "$linux_complete_name"
-        mkdir dahdi-linux-complete-$release_name+$release_name
-        ls -lrt
-        cp -rfL ../Makefile dahdi-linux-complete-$release_name+$release_name/.
-        cp -rfL ../ChangeLog dahdi-linux-complete-$release_name+$release_name/.
-        cp -rfL ../README.md dahdi-linux-complete-$release_name+$release_name/.
+        mkdir $linux_complete_name
+        cp -rfL Makefile $linux_complete_name/.
+        cp -rfL ChangeLog $linux_complete_name/.
+        cp -rfL README.md $linux_complete_name/.
 ################################################################################################
 
 ################################################################################################
@@ -312,12 +316,9 @@ if [ "$project" == "dahdi-linux-complete" ]; then
         echo $release_name > ../$linux_complete_name/linux/.version
 
         echo "Changing directory to linux folder of $linux_complete_name"
-        cd ../$linux_complete_name
-        ls -lrt
-        cd linux
+        cd ../$linux_complete_name/linux
         make install-firmware firmware-loaders DESTDIR=../../../../../release
         cd ../../dahdi-linux
-        ls -lrt
 
 #Create Dahdi-linux release tar ball
         create_project_release_tar dahdi-linux
