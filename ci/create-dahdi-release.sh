@@ -155,7 +155,7 @@ create_github_release() {
                   -H "Authorization: Bearer $github_token" \
                   -H "X-GitHub-Api-Version: 2022-11-28" \
                   https://api.github.com/repos/$user/$project_name/releases \
-                  -d '{"tag_name":"v'$release_name'","target_commitish":"'$branch_name'","name":"v'$rel_name'","body":"This is Pushkar Test Release","draft":false,"prerelease":true,"generate_release_notes":false}'`
+                  -d '{"tag_name":"v'$release_name'","target_commitish":"'$branch_name'","name":"Release '$rel_name'","body":"This is Pushkar Test Release","draft":false,"prerelease":true,"generate_release_notes":false}'`
 
         if [ "$resp_code" == "200" ] || [ "$resp_code" == "201" ] || [ "$resp_code" == "202" ]; then
                 id_token=`cat response.txt | grep -oP "(?<=id\":)[^","]*"  | head -n 1 | tr -d ' '`
@@ -195,6 +195,47 @@ upload_github_release_asset() {
 
                 rm -rf response.txt
         done
+
+	if [ "$project_name" == "dahdi-linux-complete" ]; then
+		update_github_release $project_name $id_token $linux_complete_name.tar.gz
+	else
+		update_github_release $project_name $id_token $project_name-$release_name.tar.gz
+	fi
+}
+
+update_github_release() {
+	project_name=$1
+	id_token=$2
+	file_name=$3
+
+	prev_tag="v3.3.0"
+	if [ "$project_name" == "dahdi-linux-complete" ]; then
+		rel_name="$release_name+$release_name"
+	else
+		rel_name=$release_name
+	fi
+
+        sed 's/$tag_name/v'$rel_name'/g' ../announcement > announcement-$project_name
+        sed -i 's/$product_name/'$project_name'/g' announcement-$project_name
+        sed -i 's/$release_name/'$release_name'/g' announcement-$project_name
+        sed -i 's/$prev_tag_name/'$prev_tag'/g' announcement-$project_name
+        sed -i 's/$tar_ball_name/'$file_name'/g' announcement-$project_name
+
+        announement=`cat announcement-$project_name`
+
+        resp_code=`curl -s -o response.txt -L \
+                  -X PATCH \
+                  -H "Accept: application/vnd.github+json" \
+                  -H "Authorization: Bearer $github_token" \
+                  -H "X-GitHub-Api-Version: 2022-11-28" \
+                  https://api.github.com/repos/$user/$project_name/releases/$id_token \
+                  -d '{"tag_name":"v'$release_name'","target_commitish":"'$branch_name'","name":"Release '$rel_name'","body":"'"$announcement"'","draft":false,"prerelease":true}'`
+
+	if [ "$resp_code" == "200" ] || [ "$resp_code" == "201" ] || [ "$resp_code" == "202" ]; then
+	        echo "$project_name Release $release_name is successfully updated"
+	else
+	        echo "Invalid response code $resp_code while updating $project_name release $release_name"
+	fi
 }
 
 if [[ $# -eq 0 ]] ; then
@@ -294,12 +335,12 @@ if [ "$project" == "dahdi-linux-complete" ]; then
 #Create Tag
         create_tag_github_project dahdi-linux-complete
 
-        linux_complete_name="dahdi-linux-complete-"$release_name"+"$release_name
-        echo "$linux_complete_name"
-        mkdir ../$linux_complete_name
-        cp -rfL Makefile ../$linux_complete_name/.
-        cp -rfL ChangeLog ../$linux_complete_name/.
-        cp -rfL README.md ../$linux_complete_name/.
+	linux_complete_name="dahdi-linux-complete-"$release_name"+"$release_name
+	echo "$linux_complete_name"
+	mkdir ../$linux_complete_name
+	cp -rfL Makefile ../$linux_complete_name/.
+	cp -rfL ChangeLog ../$linux_complete_name/.
+	cp -rfL README.md ../$linux_complete_name/.
 	cd ..
 ################################################################################################
 
