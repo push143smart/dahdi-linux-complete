@@ -50,11 +50,7 @@ create_checkout_github_project_branch() {
                 if [[ -z ${branch_present} ]]; then
                         echo "Creating branch $branch_name for $project_name"
                         git remote -v
-                        if [ "$project_name" == "dahdi-tools" ]; then
-                                git push origin test-release:refs/heads/$branch_name
-                        else
-                                git push origin master:refs/heads/$branch_name
-                        fi
+                        git push origin master:refs/heads/$branch_name
                 fi
 
                 git fetch origin
