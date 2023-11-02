@@ -208,7 +208,6 @@ update_github_release() {
 	id_token=$2
 	file_name=$3
 
-	prev_tag="v3.3.0"
 	if [ "$project_name" == "dahdi-linux-complete" ]; then
 		rel_name="$release_name+$release_name"
 	else
@@ -307,6 +306,12 @@ fi
 
 if [ "w$9" != "w" ]; then
 	email=$9
+fi
+
+if [ "w$10" != "w" ]; then
+	prev_tag=$10
+else
+	prev_tag="v3.3.0-rc1"
 fi
 
 echo "Setting up git global config with user.name as $name and email as $email....."

@@ -27,6 +27,13 @@ on:
         required: true
         type: string
         default: "psingh@sangoma.com"
+      previous_release_version:
+        description: |
+          Previous Release Version:
+          Examples:
+            3.1.0, 3.1.1, 3.2.0, 3.2.1 etc.
+        required: true
+        type: string
       release_version:
         description: |
           Release Version:
@@ -68,8 +75,8 @@ jobs:
 # 0 is for release run and 1 is for dry/test run 
       - name: Run Release if it is release run
         if: ${{ inputs.rel_run }}
-        run: bash ./ci/create-dahdi-release.sh ${{ inputs.project_name }} ${{ inputs.release_version }} 0 ${{ inputs.beta_rel }} ${{ inputs.github_user_repo }} ${{ secrets.DAHDI_DEV_AUTH_KEY }} "${{ secrets.DAHDI_DEV_PRIV_GPG_KEY }}" ${{ inputs.username }} ${{ inputs.user_email }}
+        run: bash ./ci/create-dahdi-release.sh ${{ inputs.project_name }} ${{ inputs.release_version }} 0 ${{ inputs.beta_rel }} ${{ inputs.github_user_repo }} ${{ secrets.DAHDI_DEV_AUTH_KEY }} "${{ secrets.DAHDI_DEV_PRIV_GPG_KEY }}" ${{ inputs.username }} ${{ inputs.user_email }} ${{ inputs.previous_release_version}}
 
       - name: Run Release if its is dry run
         if: ${{ !inputs.rel_run }}
-        run: bash ./ci/create-dahdi-release.sh ${{ inputs.project_name }} ${{ inputs.release_version }} 1 ${{ inputs.beta_rel }} ${{ inputs.github_user_repo }} ${{ secrets.DAHDI_DEV_AUTH_KEY }} "${{ secrets.DAHDI_DEV_PRIV_GPG_KEY }}" ${{ inputs.username }} ${{ inputs.user_email }}
+        run: bash ./ci/create-dahdi-release.sh ${{ inputs.project_name }} ${{ inputs.release_version }} 1 ${{ inputs.beta_rel }} ${{ inputs.github_user_repo }} ${{ secrets.DAHDI_DEV_AUTH_KEY }} "${{ secrets.DAHDI_DEV_PRIV_GPG_KEY }}" ${{ inputs.username }} ${{ inputs.user_email }} ${{ previous_release_version }}
